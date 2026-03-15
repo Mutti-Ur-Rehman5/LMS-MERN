@@ -1,19 +1,33 @@
-function App() {
-  return (
-    <div className=" bg-black min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-      <div className="bg-white shadow-lg rounded-2xl p-10 max-w-xl text-center">
-        <h1 className="text-5xl font-extrabold text-blue-600 mb-4">
-          LMS MERN 🚀
-        </h1>
-        <p className="text-gray-600 text-lg">
-          Fully Ready with React, Vite & TailwindCSS. Build your Learning Management System with ease!
-        </p>
-        <button className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition duration-300">
-          Get Started
-        </button>
-      </div>
-    </div>
-  );
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+function StudentDashboard() {
+  return <div className="min-h-screen flex items-center justify-center text-white bg-gray-900">Student Dashboard</div>;
 }
 
-export default App;
+function TeacherDashboard() {
+  return <div className="min-h-screen flex items-center justify-center text-white bg-gray-900">Teacher Dashboard</div>;
+}
+
+function AdminDashboard() {
+  return <div className="min-h-screen flex items-center justify-center text-white bg-gray-900">Admin Dashboard</div>;
+}
+
+export default function App() {
+  const getRole = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user?.role || null;
+  };
+
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/student" element={getRole() === 'student' ? <StudentDashboard /> : <Navigate to="/login" />} />
+      <Route path="/teacher" element={getRole() === 'teacher' ? <TeacherDashboard /> : <Navigate to="/login" />} />
+      <Route path="/admin" element={getRole() === 'admin' ? <AdminDashboard /> : <Navigate to="/login" />} />
+    </Routes>
+  );
+}
